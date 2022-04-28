@@ -14,29 +14,32 @@ class TutorialHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Scaffold is a layout for
+    // the major Material Components.
     return Scaffold(
       appBar: AppBar(
         leading: const IconButton(
-          onPressed: null,
           icon: Icon(Icons.menu),
           tooltip: 'Navigation menu',
+          onPressed: null,
         ),
         title: const Text('Example title'),
         actions: const [
           IconButton(
-            onPressed: null,
             icon: Icon(Icons.search),
             tooltip: 'Search',
+            onPressed: null,
           ),
         ],
       ),
+      // body is the majority of the screen.
       body: const Center(
         child: Text('Hello, world!'),
       ),
       floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Add',
+        tooltip: 'Add', // used by assistive technologies
         child: Icon(Icons.add),
+        onPressed: null,
       ),
     );
   }
