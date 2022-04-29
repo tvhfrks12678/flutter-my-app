@@ -17,9 +17,7 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Welcome to Flutters'),
         ),
-        body: const Center(
-          child: MyWidget(),
-        ),
+        body: const MyWidget(),
       ),
     );
   }
@@ -27,7 +25,7 @@ class MyApp extends StatelessWidget {
 
 var list = [
   const BlueBox(),
-  const BlueBox(),
+  const BiggerBlueBox(),
   const BlueBox(),
 ];
 
@@ -36,6 +34,8 @@ class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: list,
     );
   }
@@ -48,6 +48,21 @@ class BlueBox extends StatelessWidget {
     return Container(
       width: 50,
       height: 50,
+      decoration: BoxDecoration(
+        color: Colors.blue,
+        border: Border.all(),
+      ),
+    );
+  }
+}
+
+class BiggerBlueBox extends StatelessWidget {
+  const BiggerBlueBox({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 50,
+      height: 100,
       decoration: BoxDecoration(
         color: Colors.blue,
         border: Border.all(),
