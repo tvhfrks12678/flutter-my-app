@@ -25,8 +25,16 @@ class MyApp extends StatelessWidget {
 
 var list = [
   const BlueBox(),
-  const BiggerBlueBox(),
-  const BlueBox(),
+  const Flexible(
+    fit: FlexFit.tight,
+    flex: 1,
+    child: BlueBox(),
+  ),
+  const Flexible(
+    fit: FlexFit.tight,
+    flex: 1,
+    child: BlueBox(),
+  ),
 ];
 
 class MyWidget extends StatelessWidget {
@@ -34,8 +42,8 @@ class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      // mainAxisAlignment: MainAxisAlignment.spaceAround,
+      // crossAxisAlignment: CrossAxisAlignment.end,
       children: list,
     );
   }
