@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,12 +29,12 @@ const List<Widget> list = [
   //   child: BlueBox(),
   // ),
   // const Expanded(child: BlueBox()),
-  // BlueBox(),
   // SizedBox(width: 50),
-  // BlueBox(),
   TextBlue(),
-  TextItem(fontSize: 50, fontFamily: 'Futura', fontColor: Colors.green),
-  TextItem(fontSize: 40, fontFamily: 'Futura', fontColor: Colors.red)
+  // TextItem(fontSize: 50, fontFamily: 'Futura', fontColor: Colors.green),
+  TextItem(fontSize: 40, fontFamily: 'Futura', fontColor: Colors.red),
+  IconItem(iconSize: 50, iconColor: Colors.blue),
+  IconItem(iconSize: 50, iconColor: Colors.red),
 ];
 
 class MyWidget extends StatelessWidget {
@@ -45,6 +43,42 @@ class MyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: list,
+    );
+  }
+}
+
+final List<IconEntity> iconList = [
+  IconEntity(50, Colors.blue),
+  IconEntity(50, Colors.red),
+];
+
+var iconItemList = iconList.map((item) {
+  return item;
+});
+
+class IconEntity {
+  final double fontSize;
+  final Color iconColor;
+
+  IconEntity(this.fontSize, this.iconColor);
+}
+
+class IconItem extends StatelessWidget {
+  const IconItem({
+    Key? key,
+    required this.iconSize,
+    required this.iconColor,
+  }) : super(key: key);
+
+  final double? iconSize;
+  final Color iconColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.widgets,
+      size: iconSize,
+      color: iconColor,
     );
   }
 }
