@@ -25,15 +25,18 @@ class MyApp extends StatelessWidget {
 
 const List<Widget> list = [
   BlueBox(),
-  Spacer(flex: 1),
-  SizedBox(
-    width: 100,
-    child: BlueBox(),
-  ),
+  // Spacer(flex: 1),
+  // SizedBox(
+  //   width: 100,
+  //   child: BlueBox(),
+  // ),
   // const Expanded(child: BlueBox()),
-  BlueBox(),
-  SizedBox(width: 50),
-  BlueBox(),
+  // BlueBox(),
+  // SizedBox(width: 50),
+  // BlueBox(),
+  TextBlue(),
+  TextItem(fontSize: 50, fontFamily: 'Futura', fontColor: Colors.green),
+  TextItem(fontSize: 40, fontFamily: 'Futura', fontColor: Colors.red)
 ];
 
 class MyWidget extends StatelessWidget {
@@ -42,6 +45,47 @@ class MyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: list,
+    );
+  }
+}
+
+class TextItem extends StatelessWidget {
+  const TextItem({
+    Key? key,
+    required this.fontSize,
+    required this.fontFamily,
+    required this.fontColor,
+  }) : super(key: key);
+
+  final double? fontSize;
+  final String? fontFamily;
+  final Color fontColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'Hey1',
+      style: TextStyle(
+        fontSize: fontSize,
+        fontFamily: fontFamily,
+        color: fontColor,
+      ),
+    );
+  }
+}
+
+class TextBlue extends StatelessWidget {
+  const TextBlue({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text(
+      'Hey1',
+      style: TextStyle(
+        fontSize: 30,
+        fontFamily: 'Futura',
+        color: Colors.blue,
+      ),
     );
   }
 }
