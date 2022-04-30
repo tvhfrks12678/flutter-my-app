@@ -23,15 +23,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-var list = [
-  const BlueBox(),
-  const SizedBox(width: 50),
-  const SizedBox(
+const List<Widget> list = [
+  BlueBox(),
+  Spacer(flex: 1),
+  SizedBox(
     width: 100,
     child: BlueBox(),
   ),
   // const Expanded(child: BlueBox()),
-  const BlueBox(),
+  BlueBox(),
+  SizedBox(width: 50),
+  BlueBox(),
 ];
 
 class MyWidget extends StatelessWidget {
