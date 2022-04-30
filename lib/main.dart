@@ -42,13 +42,40 @@ class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Image.network(
-            'https://raw.githubusercontent.com/flutter/website/main/examples/layout/sizing/images/pic1.jpg'),
         Row(
-          children: list,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Icon(Icons.account_circle, size: 50),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Flutter McFlutter',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+                const Text('Experienced App Develop'),
+              ],
+            ),
+          ],
         ),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            Text('123 Main Street'),
+            Text('415-555-0198'),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [],
+        )
       ],
     );
   }
