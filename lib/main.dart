@@ -25,7 +25,12 @@ class MyApp extends StatelessWidget {
 
 var list = [
   const BlueBox(),
-  const Expanded(child: BlueBox()),
+  const SizedBox(width: 50),
+  const SizedBox(
+    width: 100,
+    child: BlueBox(),
+  ),
+  // const Expanded(child: BlueBox()),
   const BlueBox(),
 ];
 
