@@ -41,8 +41,15 @@ class MyWidget extends StatelessWidget {
   const MyWidget({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: list,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.network(
+            'https://raw.githubusercontent.com/flutter/website/main/examples/layout/sizing/images/pic1.jpg'),
+        Row(
+          children: list,
+        ),
+      ],
     );
   }
 }
