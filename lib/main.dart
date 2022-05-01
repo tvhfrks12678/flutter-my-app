@@ -15,28 +15,68 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Welcome to Flutters'),
         ),
-        body: Center(
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(0, 40, 0, 30),
-            height: 600,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 440,
-                  child: leftColumn,
-                ),
-                // const MyWidget(),
-              ],
-            ),
-          ),
-        ),
-        // body: const Center(
-        //   child: MyWidget(),
+        // body: Center(
+        //   child: Container(
+        //     margin: const EdgeInsets.fromLTRB(0, 40, 0, 30),
+        //     height: 600,
+        //     child: Row(
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         SizedBox(
+        //           width: 440,
+        //           child: leftColumn,
+        //         ),
+        //         // const MyWidget(),
+        //       ],
+        //     ),
+        //   ),
         // ),
+        body: const Center(
+          child: MyImageWidget(),
+        ),
       ),
     );
   }
+}
+
+class MyImageWidget extends StatelessWidget {
+  const MyImageWidget({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return _buildImageColumn();
+  }
+
+  Widget _buildImageColumn() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.black26,
+      ),
+      child: Column(
+        children: [
+          _buildImageRow(1),
+          _buildImageRow(3),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDecoratedImage(int imageIndex) => Expanded(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(width: 10, color: Colors.black38),
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+          ),
+          margin: const EdgeInsets.all(4),
+          child: Image.asset('images/pic1.jpg'),
+        ),
+      );
+
+  Widget _buildImageRow(int imageIndex) => Row(
+        children: [
+          _buildDecoratedImage(imageIndex),
+          _buildDecoratedImage(imageIndex + 1),
+        ],
+      );
 }
 
 class MyWidget extends StatelessWidget {
