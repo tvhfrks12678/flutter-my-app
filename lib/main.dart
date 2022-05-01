@@ -1,53 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  final appTitle = 'Quiz App';
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: appTitle,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(appTitle),
+    return ChangeNotifierProvider<MyModel>(
+      create: (context) => MyModel(),
+      child: MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(title: Text('My App')),
+          body: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.all(20),
+                color: Colors.green[200],
+                child: Consumer<MyModel>(
+                  builder: (context, myModel, child) {
+                    return RaisedButton(
+                      child: Text('Do something'),
+                      onPressed: () {
+                        myModel.doSomething();
+                      },
+                    );
+                  },
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(35),
+                color: Colors.blue[200],
+                child: Consumer<MyModel>(
+                  builder: (context, myModel, child) {
+                    return Text(myModel.someValue);
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
-        body: const MyBody(),
       ),
     );
   }
 }
 
-class MyBody extends StatelessWidget {
-  const MyBody({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: textButtonList);
-  }
-
-  Widget _buildTextButton(String text) => TextButton(
-        style: TextButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
-        onPressed: _onPressed,
-        child: Text(text),
-      );
-
-  _onPressed() {
-    print('Test');
+class MyModel with ChangeNotifier {
+  String someValue = 'Hello';
+  void doSomething() {
+    someValue = 'Goodbye';
+    print(someValue);
+    notifyListeners();
   }
 }
-
-final List<String> textList = ['テスト', 'チェスト', 'ゲスト'];
-
-final List<Widget> textButtonList = (textList.map(
-  (e) => buildTextButton(e),
-)).toList();
-
-TextButton buildTextButton(String text) => TextButton(
-      style: TextButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
-      onPressed: () {},
-      child: Text(text),
-    );
