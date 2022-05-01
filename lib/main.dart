@@ -15,11 +15,120 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Welcome to Flutters'),
         ),
-        body: const MyWidget(),
+        body: Center(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 40, 0, 30),
+            height: 600,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 440,
+                  child: leftColumn,
+                ),
+                // const MyWidget(),
+              ],
+            ),
+          ),
+        ),
+        // body: const Center(
+        //   child: MyWidget(),
+        // ),
       ),
     );
   }
 }
+
+class MyWidget extends StatelessWidget {
+  const MyWidget({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        iconTextList,
+        ratings,
+        stars,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Image.asset('images/lake.jpg'),
+            ),
+            Expanded(
+              flex: 2,
+              child: Image.asset('images/lake.jpg'),
+            ),
+            Expanded(
+              child: Image.asset('images/lake.jpg'),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.star, color: Colors.green[500]),
+            Icon(Icons.star, color: Colors.green[500]),
+            Icon(Icons.star, color: Colors.green[500]),
+            const Icon(Icons.star, color: Colors.black),
+            const Icon(Icons.star, color: Colors.black),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+final leftColumn = Container(
+  padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+  child: Column(
+    children: [
+      iconTextList,
+      ratings,
+    ],
+  ),
+);
+
+const descTextStyle = TextStyle(
+  color: Colors.black,
+  fontWeight: FontWeight.w800,
+  fontFamily: 'Roboto',
+  letterSpacing: 0.5,
+  fontSize: 18,
+  height: 2,
+);
+
+final iconTextList = DefaultTextStyle.merge(
+  style: descTextStyle,
+  child: Container(
+    padding: const EdgeInsets.all(20),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Column(
+          children: [
+            Icon(Icons.kitchen, color: Colors.green[500]),
+            const Text('PREP:'),
+            const Text('25 min'),
+          ],
+        ),
+        Column(
+          children: [
+            Icon(Icons.timer, color: Colors.green[500]),
+            const Text('COOK:'),
+            const Text('1 hr'),
+          ],
+        ),
+        Column(
+          children: [
+            Icon(Icons.restaurant, color: Colors.green[500]),
+            const Text('FEEDS:'),
+            const Text('4-6'),
+          ],
+        ),
+      ],
+    ),
+  ),
+);
 
 const List<Widget> list = [
   BlueBox(),
@@ -37,49 +146,36 @@ const List<Widget> list = [
   IconItem(iconSize: 50, iconColor: Colors.red),
 ];
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Icon(Icons.account_circle, size: 50),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Flutter McFlutter',
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-                const Text('Experienced App Develop'),
-              ],
-            ),
-          ],
+var stars = Row(
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    Icon(Icons.star, color: Colors.green[500]),
+    Icon(Icons.star, color: Colors.green[500]),
+    Icon(Icons.star, color: Colors.green[500]),
+    const Icon(Icons.star, color: Colors.black),
+    const Icon(Icons.star, color: Colors.black),
+  ],
+);
+
+final ratings = Container(
+  padding: const EdgeInsets.all(20),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      stars,
+      const Text(
+        '170 Reviews',
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w800,
+          fontFamily: 'Roboto',
+          letterSpacing: 0.5,
+          fontSize: 20,
         ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text('123 Main Street'),
-            Text('415-555-0198'),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [],
-        )
-      ],
-    );
-  }
-}
+      ),
+    ],
+  ),
+);
 
 final List<IconEntity> iconList = [
   IconEntity(50, Colors.blue),
