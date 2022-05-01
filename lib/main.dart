@@ -43,9 +43,25 @@ class MyImageWidget extends StatelessWidget {
   const MyImageWidget({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return _buildImageColumn();
+    return _buildGrid();
   }
 
+  Widget _buildGrid() => GridView.extent(
+        maxCrossAxisExtent: 150,
+        padding: const EdgeInsets.all(4),
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
+        children: _buildGridTileList(30),
+      );
+
+  List<Container> _buildGridTileList(int count) => List.generate(
+        count,
+        (i) => Container(
+          child: Image.asset('images/lake.jpg'),
+        ),
+      );
+
+  // Container
   Widget _buildImageColumn() {
     return Container(
       decoration: const BoxDecoration(
