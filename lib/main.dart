@@ -43,7 +43,32 @@ class MyImageWidget extends StatelessWidget {
   const MyImageWidget({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return _buildList();
+    return _buildStack();
+  }
+
+  Widget _buildStack() {
+    return Stack(
+      alignment: const Alignment(0.6, 0.6),
+      children: [
+        const CircleAvatar(
+          backgroundImage: AssetImage('images/lake.jpg'),
+          radius: 100,
+        ),
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.black45,
+          ),
+          child: const Text(
+            'Mia B',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildList() {
