@@ -6,8 +6,9 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<MyModel>(
-      create: (context) => MyModel(),
+    return FutureProvider<MyModel>(
+      initialData: MyModel(someValue: 'default value'),
+      create: (context) => someAsyncFunctionToGetMyModel(),
       child: MaterialApp(
         home: Scaffold(
           appBar: AppBar(title: Text('My App')),
@@ -45,11 +46,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyModel with ChangeNotifier {
+Future<MyModel> someAsyncFunctionToGetMyModel() async {
+  await Future.delayed(Duration(seconds: 3));
+  return MyModel(someValue: 'new data');
+}
+
+class MyModel {
+  MyModel({required this.someValue});
   String someValue = 'Hello';
-  void doSomething() {
+  Future<void> doSomething() async {
+    await Future.delayed(Duration(seconds: 2));
     someValue = 'Goodbye';
     print(someValue);
-    notifyListeners();
   }
 }
