@@ -11,22 +11,25 @@ void main() async {
   runApp(const MyApp());
 }
 
+const appTitle = 'ウクライナ侵略 DE クイズ';
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Welcome to Flutter',
+      title: appTitle,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Welcome to Flutter'),
+          title: const Text('ウクライナ侵略 DE クイズ'),
         ),
         body: Center(
           child: Column(
             children: const [
               GetUserName(documentId: 'gu51bxc3Cc6ydVe7TB31'),
               AddQuiz(),
+              PrintQuizzes(),
             ],
           ),
         ),
@@ -69,6 +72,50 @@ class GetUserName extends StatelessWidget {
   }
 }
 
+class PrintQuizzes extends StatelessWidget {
+  const PrintQuizzes({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    CollectionReference quizzes =
+        FirebaseFirestore.instance.collection('quizzes');
+    Future<void> printQuizzes() {
+      return quizzes.get().then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          print(doc["question"]);
+        });
+      }).catchError((error) => print('Failed to add quiz: $error'));
+    }
+
+    return TextButton(
+      onPressed: printQuizzes,
+      child: const Text(
+        'Print Quizzes',
+      ),
+    );
+  }
+}
+
+const List<Map<String, dynamic>> quizList = [
+  {
+    'question': 'ウクライナのルハーンシク州のルビージュネ出身のMMA選手は？',
+    'choices': ['ヒョードル', 'スターリング', 'マゴメドフ', 'ガヌー'],
+    'answerNo': 0
+  },
+  {
+    'question': 'オデッサへのミサイル攻撃で死亡した赤ん坊は？',
+    'choices': ['生後36ヶ月', '生後3ヶ月', '生後5ヶ月', '生後9ヶ月'],
+    'answerNo': 1
+  },
+  {
+    'question': '2022年4月にウクライナで初確認されたと言われているロシアの最新の戦車は？',
+    'choices': ['T-90M', 'T-72', 'T-80', 'T-60'],
+    'answerNo': 0
+  },
+];
+
 class AddQuiz extends StatelessWidget {
   const AddQuiz({
     Key? key,
@@ -100,20 +147,19 @@ class AddQuiz extends StatelessWidget {
   }
 }
 
-const List<Map<String, dynamic>> quizList = [
-  {
-    'question': 'ウクライナのルハーンシク州のルビージュネ出身のMMA選手は？',
-    'choices': ['ヒョードル', 'スターリング', 'マゴメドフ', 'ガヌー'],
-    'answerNo': 0
-  },
-  {
-    'question': 'オデッサへのミサイル攻撃で死亡した赤ん坊は？',
-    'choices': ['生後36ヶ月', '生後3ヶ月', '生後5ヶ月', '生後9ヶ月'],
-    'answerNo': 1
-  },
-  {
-    'question': '2022年4月にウクライナで初確認されたと言われているロシアの最新の戦車は？',
-    'choices': ['T-90M', 'T-72', 'T-80', 'T-60'],
-    'answerNo': 0
-  },
-];
+class QuizWidget extends StatefulWidget {
+  const QuizWidget({Key? key}) : super(key: key);
+
+  @override
+  _QuizWidgetState createState() => _QuizWidgetState();
+}
+
+class _QuizWidgetState extends State<QuizWidget> {
+  var _quizzes = [];
+  var quiz = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('data');
+  }
+}
