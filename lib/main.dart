@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: Column(
             children: const [
-              AddUser(fullName: 'Bob', company: 'test comp', age: 34),
               GetUserName(documentId: 'gu51bxc3Cc6ydVe7TB31'),
+              AddQuiz(),
             ],
           ),
         ),
@@ -69,34 +69,51 @@ class GetUserName extends StatelessWidget {
   }
 }
 
-class AddUser extends StatelessWidget {
-  final String fullName;
-  final String company;
-  final int age;
-
-  const AddUser(
-      {Key? key,
-      required this.fullName,
-      required this.company,
-      required this.age})
-      : super(key: key);
+class AddQuiz extends StatelessWidget {
+  const AddQuiz({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    CollectionReference quizzes =
+        FirebaseFirestore.instance.collection('quizzes');
+    Future<void> addQuizz(Map<String, dynamic> quiz) {
+      return quizzes
+          .add(quiz)
+          .then((value) => print("Quiz Added: $value"))
+          .catchError((error) => print('Failed to add quiz: $error'));
+    }
 
-    Future<void> addUser() {
-      return users
-          .add({'full_name': fullName, 'company': company, 'age': age})
-          .then((value) => print("User Added"))
-          .catchError((error) => print("Failed to add user: $error"));
+    addQuizzes() {
+      for (Map<String, dynamic> quiz in quizList) {
+        addQuizz(quiz);
+      }
     }
 
     return TextButton(
-      onPressed: addUser,
+      onPressed: addQuizzes,
       child: const Text(
-        "Add User",
+        'Add Quizzes',
       ),
     );
   }
 }
+
+const List<Map<String, dynamic>> quizList = [
+  {
+    'question': 'ウクライナのルハーンシク州のルビージュネ出身のMMA選手は？',
+    'choices': ['ヒョードル', 'スターリング', 'マゴメドフ', 'ガヌー'],
+    'answerNo': 0
+  },
+  {
+    'question': 'オデッサへのミサイル攻撃で死亡した赤ん坊は？',
+    'choices': ['生後36ヶ月', '生後3ヶ月', '生後5ヶ月', '生後9ヶ月'],
+    'answerNo': 1
+  },
+  {
+    'question': '2022年4月にウクライナで初確認されたと言われているロシアの最新の戦車は？',
+    'choices': ['T-90M', 'T-72', 'T-80', 'T-60'],
+    'answerNo': 0
+  },
+];
