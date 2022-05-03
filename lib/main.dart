@@ -1,43 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<MyModel>(
-      initialData: MyModel(someValue: 'default value'),
-      create: (context) => getStreamOfMyModel(),
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(title: Text('My App')),
-          body: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.all(20),
-                color: Colors.green[200],
-                child: Consumer<MyModel>(
-                  builder: (context, myModel, child) {
-                    return RaisedButton(
-                      child: Text('Do something'),
-                      onPressed: () {
-                        myModel.doSomething();
-                      },
-                    );
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(35),
-                color: Colors.blue[200],
-                child: Consumer<MyModel>(
-                  builder: (context, myModel, child) {
-                    return Text(myModel.someValue);
-                  },
-                ),
-              ),
+    return MaterialApp(
+      title: 'Welcome to Flutter',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Welcome to Flutter'),
+        ),
+        body: Center(
+          child: Column(
+            children: const [
+              AddUser(fullName: 'Bob', company: 'test comp', age: 34),
+              GetUserName(documentId: 'gu51bxc3Cc6ydVe7TB31'),
             ],
           ),
         ),
@@ -46,16 +35,68 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Stream<MyModel> getStreamOfMyModel() {
-  return Stream<MyModel>.periodic(
-      Duration(seconds: 1), (x) => MyModel(someValue: '$x')).take(10);
+class GetUserName extends StatelessWidget {
+  final String documentId;
+
+  const GetUserName({Key? key, required this.documentId}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    return FutureBuilder<DocumentSnapshot>(
+      future: users.doc(documentId).get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return const Text("Something went wrong");
+        }
+
+        if (snapshot.hasData && !snapshot.data!.exists) {
+          return const Text("Document does not exit");
+        }
+
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+          return Text(
+              "Full Name: ${data['full_name']} Company Name: ${data['company']}");
+        }
+
+        return const Text("loading");
+      },
+    );
+  }
 }
 
-class MyModel {
-  MyModel({required this.someValue});
-  String someValue = 'Hello';
-  void doSomething() {
-    someValue = 'Goodbye';
-    print(someValue);
+class AddUser extends StatelessWidget {
+  final String fullName;
+  final String company;
+  final int age;
+
+  const AddUser(
+      {Key? key,
+      required this.fullName,
+      required this.company,
+      required this.age})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    Future<void> addUser() {
+      return users
+          .add({'full_name': fullName, 'company': company, 'age': age})
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
+    }
+
+    return TextButton(
+      onPressed: addUser,
+      child: const Text(
+        "Add User",
+      ),
+    );
   }
 }
