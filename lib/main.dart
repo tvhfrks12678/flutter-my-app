@@ -27,9 +27,8 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: Column(
             children: const [
-              GetUserName(documentId: 'gu51bxc3Cc6ydVe7TB31'),
               AddQuiz(),
-              PrintQuizzes(),
+              QuizWidget(),
             ],
           ),
         ),
@@ -38,80 +37,45 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class GetUserName extends StatelessWidget {
-  final String documentId;
-
-  const GetUserName({Key? key, required this.documentId}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-    return FutureBuilder<DocumentSnapshot>(
-      future: users.doc(documentId).get(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return const Text("Something went wrong");
-        }
-
-        if (snapshot.hasData && !snapshot.data!.exists) {
-          return const Text("Document does not exit");
-        }
-
-        if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data =
-              snapshot.data!.data() as Map<String, dynamic>;
-          return Text(
-              "Full Name: ${data['full_name']} Company Name: ${data['company']}");
-        }
-
-        return const Text("loading");
-      },
-    );
-  }
-}
-
-class PrintQuizzes extends StatelessWidget {
-  const PrintQuizzes({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    CollectionReference quizzes =
-        FirebaseFirestore.instance.collection('quizzes');
-    Future<void> printQuizzes() {
-      return quizzes.get().then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          print(doc["question"]);
-        });
-      }).catchError((error) => print('Failed to add quiz: $error'));
-    }
-
-    return TextButton(
-      onPressed: printQuizzes,
-      child: const Text(
-        'Print Quizzes',
-      ),
-    );
-  }
-}
-
 const List<Map<String, dynamic>> quizList = [
   {
     'question': 'ウクライナのルハーンシク州のルビージュネ出身のMMA選手は？',
-    'choices': ['ヒョードル', 'スターリング', 'マゴメドフ', 'ガヌー'],
+    'choices': [
+      'ヒョードル',
+      'スターリング',
+      'マゴメドフ',
+      'ガヌー',
+    ],
     'answerNo': 0
   },
   {
-    'question': 'オデッサへのミサイル攻撃で死亡した赤ん坊は？',
-    'choices': ['生後36ヶ月', '生後3ヶ月', '生後5ヶ月', '生後9ヶ月'],
+    'question': 'ロシアのオデッサへの住宅へのミサイル攻撃で死亡した赤ん坊は？',
+    'choices': [
+      '生後36ヶ月',
+      '生後3ヶ月',
+      '生後5ヶ月',
+      '生後9ヶ月',
+    ],
     'answerNo': 1
   },
   {
     'question': '2022年4月にウクライナで初確認されたと言われているロシアの最新の戦車は？',
-    'choices': ['T-90M', 'T-72', 'T-80', 'T-60'],
+    'choices': [
+      'T-90M',
+      'T-72',
+      'T-80',
+      'T-60',
+    ],
+    'answerNo': 0
+  },
+  {
+    'question': 'ハルキウ州のイジュームから南東に45kmのドネツク州の人口2万の街の名前は？',
+    'choices': [
+      'オデッサ',
+      'マリウポリ',
+      'キーウ',
+      'リマン',
+    ],
     'answerNo': 0
   },
 ];
@@ -154,12 +118,68 @@ class QuizWidget extends StatefulWidget {
   _QuizWidgetState createState() => _QuizWidgetState();
 }
 
+CollectionReference quizzesReference =
+    FirebaseFirestore.instance.collection('quizzes');
+
+class Quiz {
+  final String question;
+  final List<String> choices;
+  final int answerNo;
+
+  const Quiz(this.question, this.choices, this.answerNo);
+}
+
 class _QuizWidgetState extends State<QuizWidget> {
-  var _quizzes = [];
-  var quiz = '';
+  late List<Quiz> _quizzes;
+  late Quiz _quiz;
+
+  @override
+  void initState() {
+    loadQuizzes();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Text('data');
+    return Column(
+      children: [
+        displayQuiz(),
+        TextButton(
+          onPressed: printQuizList,
+          child: Text(
+            'print QuizList',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget displayQuiz() {
+    return Text(_quiz.question);
+  }
+
+  printQuizList() {
+    print(_quizzes);
+  }
+
+  Future<void> loadQuizzes() async {
+    QuerySnapshot querySnapshot = await quizzesReference.get();
+    List<QueryDocumentSnapshot> queryDocumentSnapshotList = querySnapshot.docs;
+
+    List<Quiz> quizzes = queryDocumentSnapshotList.map(
+      (queryDocumentSnapshot) {
+        Map<String, dynamic> data =
+            queryDocumentSnapshot.data() as Map<String, dynamic>;
+        return Quiz(
+          data['question'],
+          List<String>.from(data['choices']),
+          data['answerNo'],
+        );
+      },
+    ).toList();
+
+    setState(() {
+      _quizzes = quizzes;
+      _quiz = quizzes[0];
+    });
   }
 }
