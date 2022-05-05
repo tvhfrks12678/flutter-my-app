@@ -11,7 +11,7 @@ void main() async {
   runApp(const MyApp());
 }
 
-const appTitle = 'ウクライナ侵略 DE クイズ';
+const appTitle = 'ウクライナ DE クイズ';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -22,17 +22,137 @@ class MyApp extends StatelessWidget {
       title: appTitle,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('ウクライナ侵略 DE クイズ'),
+          title: const Text(appTitle),
         ),
-        body: Center(
-          child: Column(
-            children: const [
-              AddQuiz(),
-              QuizWidget(),
-            ],
-          ),
-        ),
+        body: const QuizWidget(),
       ),
+    );
+  }
+}
+
+class QuizWidget extends StatefulWidget {
+  const QuizWidget({Key? key}) : super(key: key);
+
+  @override
+  _QuizWidgetState createState() => _QuizWidgetState();
+}
+
+CollectionReference quizzesReference =
+    FirebaseFirestore.instance.collection('quizzes');
+
+class Quiz {
+  final String question;
+  final List<String> choices;
+  final int answerNo;
+
+  const Quiz(this.question, this.choices, this.answerNo);
+}
+
+class _QuizWidgetState extends State<QuizWidget> {
+  List<Quiz>? _quizzes;
+  Quiz? _quiz;
+
+  @override
+  void initState() {
+    super.initState();
+    loadQuizzes();
+  }
+
+  Future<void> loadQuizzes() async {
+    QuerySnapshot querySnapshot = await quizzesReference.get();
+    List<QueryDocumentSnapshot> queryDocumentSnapshotList = querySnapshot.docs;
+
+    List<Quiz> quizzes = queryDocumentSnapshotList.map(
+      (queryDocumentSnapshot) {
+        Map<String, dynamic> data =
+            queryDocumentSnapshot.data() as Map<String, dynamic>;
+        return Quiz(
+          data['question'],
+          List<String>.from(data['choices']),
+          data['answerNo'],
+        );
+      },
+    ).toList();
+
+    setState(() {
+      _quizzes = quizzes;
+      _quiz = quizzes[0];
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.fromLTRB(30, 30, 30, 30),
+      child: Column(
+        children: [
+          displayQuiz(),
+          const SizedBox(
+            height: 10,
+          ),
+          displayChoiceList(),
+        ],
+      ),
+    );
+  }
+
+  Widget displayQuiz() {
+    if (_quiz == null) {
+      return const Text(
+        '',
+      );
+    }
+    return Text(
+      "Q ${_quiz!.question}",
+    );
+  }
+
+  Widget choiceButoon(String choiceWord) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(4),
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    Color(0xFF0D47A1),
+                    Color(0xFF1976D2),
+                    Color(0xFF42A5F5),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.all(16.0),
+              primary: Colors.white,
+              textStyle: const TextStyle(fontSize: 20),
+            ),
+            onPressed: () {},
+            child: Text(choiceWord),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget displayChoiceList() {
+    List<Widget> textList = [];
+    if (_quiz != null) {
+      List<String> choices = _quiz!.choices;
+      textList = choices.asMap().entries.map((entity) {
+        int index = entity.key + 1;
+        String choice = entity.value;
+        String choiceWord = "$index. $choice";
+        return choiceButoon(choiceWord);
+      }).toList();
+    }
+    return Column(
+      children: textList,
     );
   }
 }
@@ -108,78 +228,5 @@ class AddQuiz extends StatelessWidget {
         'Add Quizzes',
       ),
     );
-  }
-}
-
-class QuizWidget extends StatefulWidget {
-  const QuizWidget({Key? key}) : super(key: key);
-
-  @override
-  _QuizWidgetState createState() => _QuizWidgetState();
-}
-
-CollectionReference quizzesReference =
-    FirebaseFirestore.instance.collection('quizzes');
-
-class Quiz {
-  final String question;
-  final List<String> choices;
-  final int answerNo;
-
-  const Quiz(this.question, this.choices, this.answerNo);
-}
-
-class _QuizWidgetState extends State<QuizWidget> {
-  late List<Quiz> _quizzes;
-  late Quiz _quiz;
-
-  @override
-  void initState() {
-    loadQuizzes();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        displayQuiz(),
-        TextButton(
-          onPressed: printQuizList,
-          child: Text(
-            'print QuizList',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget displayQuiz() {
-    return Text(_quiz.question);
-  }
-
-  printQuizList() {
-    print(_quizzes);
-  }
-
-  Future<void> loadQuizzes() async {
-    QuerySnapshot querySnapshot = await quizzesReference.get();
-    List<QueryDocumentSnapshot> queryDocumentSnapshotList = querySnapshot.docs;
-
-    List<Quiz> quizzes = queryDocumentSnapshotList.map(
-      (queryDocumentSnapshot) {
-        Map<String, dynamic> data =
-            queryDocumentSnapshot.data() as Map<String, dynamic>;
-        return Quiz(
-          data['question'],
-          List<String>.from(data['choices']),
-          data['answerNo'],
-        );
-      },
-    ).toList();
-
-    setState(() {
-      _quizzes = quizzes;
-      _quiz = quizzes[0];
-    });
   }
 }
