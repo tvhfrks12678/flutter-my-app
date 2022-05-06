@@ -83,8 +83,8 @@ class _QuizWidgetState extends State<QuizWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.fromLTRB(30, 30, 30, 30),
+      // padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(40),
       child: Column(
         children: [
           displayQuiz(),
@@ -104,39 +104,47 @@ class _QuizWidgetState extends State<QuizWidget> {
       );
     }
     return Text(
-      "Q ${_quiz!.question}",
+      "Q. ${_quiz!.question}",
+      style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
+      softWrap: true,
     );
   }
 
   Widget choiceButoon(String choiceWord) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
-      child: Stack(
-        children: <Widget>[
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: <Color>[
-                    Color(0xFF0D47A1),
-                    Color(0xFF1976D2),
-                    Color(0xFF42A5F5),
-                  ],
+    return Row(
+      children: [
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: <Color>[
+                          Color(0xFF0D47A1),
+                          Color(0xFF1976D2),
+                          Color(0xFF42A5F5),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.all(16.0),
+                    primary: Colors.white,
+                    textStyle: const TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () {},
+                  child: Text(choiceWord),
+                ),
+              ],
             ),
           ),
-          TextButton(
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.all(16.0),
-              primary: Colors.white,
-              textStyle: const TextStyle(fontSize: 20),
-            ),
-            onPressed: () {},
-            child: Text(choiceWord),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -148,7 +156,12 @@ class _QuizWidgetState extends State<QuizWidget> {
         int index = entity.key + 1;
         String choice = entity.value;
         String choiceWord = "$index. $choice";
-        return choiceButoon(choiceWord);
+        return Column(children: [
+          choiceButoon(choiceWord),
+          const SizedBox(
+            height: 10,
+          )
+        ]);
       }).toList();
     }
     return Column(
@@ -157,14 +170,51 @@ class _QuizWidgetState extends State<QuizWidget> {
   }
 }
 
+class MyStatelessWidget extends StatelessWidget {
+  const MyStatelessWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Expanded Row Sample'),
+      ),
+      body: Center(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: Container(
+                color: Colors.amber,
+                height: 100,
+              ),
+            ),
+            Container(
+              color: Colors.blue,
+              height: 100,
+              width: 50,
+            ),
+            Expanded(
+              child: Container(
+                color: Colors.amber,
+                height: 100,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 const List<Map<String, dynamic>> quizList = [
   {
     'question': 'ウクライナのルハーンシク州のルビージュネ出身のMMA選手は？',
     'choices': [
-      'ヒョードル',
-      'スターリング',
-      'マゴメドフ',
-      'ガヌー',
+      'エメリヤーエンコ・ヒョードル',
+      'マリナ・モロズ',
+      'ハビブ・ヌルマゴメドフ',
+      'ニキータ・クリロフ',
     ],
     'answerNo': 0
   },
@@ -179,7 +229,7 @@ const List<Map<String, dynamic>> quizList = [
     'answerNo': 1
   },
   {
-    'question': '2022年4月にウクライナで初確認されたと言われているロシアの最新の戦車は？',
+    'question': '2022年4月にウクライナで初確認されたと言われているロシアの新型戦車は？',
     'choices': [
       'T-90M',
       'T-72',
@@ -196,7 +246,7 @@ const List<Map<String, dynamic>> quizList = [
       'キーウ',
       'リマン',
     ],
-    'answerNo': 0
+    'answerNo': 3
   },
 ];
 
