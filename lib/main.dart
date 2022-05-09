@@ -1,7 +1,11 @@
+// import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +52,13 @@ class Quiz {
   const Quiz(this.question, this.choices, this.answerNo);
 }
 
+final Uri _url =
+    Uri.parse('https://twitter.com/Flash43191300/status/1516779347457318920');
+
+_launchUrl() async {
+  if (!await launchUrl(_url)) throw 'Could not launch $_url';
+}
+
 class _QuizWidgetState extends State<QuizWidget> {
   List<Quiz>? _quizzes;
   Quiz? _quiz;
@@ -76,18 +87,20 @@ class _QuizWidgetState extends State<QuizWidget> {
 
     setState(() {
       _quizzes = quizzes;
-      _quiz = quizzes[0];
+      _quiz = quizzes[2];
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      // padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.all(40),
+      padding: const EdgeInsets.all(20),
       child: Column(
         children: [
           displayQuiz(),
+          const SizedBox(
+            height: 10,
+          ),
           const SizedBox(
             height: 10,
           ),
@@ -103,48 +116,113 @@ class _QuizWidgetState extends State<QuizWidget> {
         '',
       );
     }
-    return Text(
-      "Q. ${_quiz!.question}",
-      style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
-      softWrap: true,
+
+    return Container(
+      padding: const EdgeInsets.only(top: 10, right: 10, bottom: 0, left: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: Colors.blue,
+          width: 1.0,
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  Text(
+                    'Q.',
+                    style: DefaultTextStyle.of(context)
+                        .style
+                        .apply(fontSizeFactor: 1.5),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              Flexible(
+                child: Text(
+                  _quiz!.question,
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                  softWrap: true,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(
+                'https://pbs.twimg.com/media/FQyuxPMXoAk-qNk?format=jpg&name=medium'),
+          ),
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "画像はロシアによって破壊されたルビージュネ",
+              textAlign: TextAlign.right,
+            ),
+          ),
+          diplayLink(),
+        ],
+      ),
     );
   }
 
-  Widget choiceButoon(String choiceWord) {
-    return Row(
-      children: [
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: Stack(
-              children: <Widget>[
-                Positioned.fill(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: <Color>[
-                          Color(0xFF0D47A1),
-                          Color(0xFF1976D2),
-                          Color(0xFF42A5F5),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.all(16.0),
-                    primary: Colors.white,
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {},
-                  child: Text(choiceWord),
-                ),
-              ],
-            ),
+  Widget diplayLink() {
+    return TextButton(
+      onPressed: _launchUrl,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: const [
+          FaIcon(
+            FontAwesomeIcons.twitter,
+            size: 15,
           ),
+          Text('(@Flash43191300)'),
+        ],
+      ),
+    );
+  }
+
+  Widget buildChoiceButton(String index, String choiceWord) {
+    const choiceTextStyle = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    );
+
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        child: Row(
+          children: [
+            Text(
+              index,
+              style: choiceTextStyle,
+            ),
+            const SizedBox(
+              width: 3,
+            ),
+            Flexible(
+              child: Text(
+                choiceWord,
+                style: choiceTextStyle,
+              ),
+            ),
+          ],
         ),
-      ],
+        onPressed: () {},
+      ),
     );
   }
 
@@ -154,55 +232,15 @@ class _QuizWidgetState extends State<QuizWidget> {
       List<String> choices = _quiz!.choices;
       textList = choices.asMap().entries.map((entity) {
         int index = entity.key + 1;
+
         String choice = entity.value;
-        String choiceWord = "$index. $choice";
         return Column(children: [
-          choiceButoon(choiceWord),
-          const SizedBox(
-            height: 10,
-          )
+          buildChoiceButton("${index.toString()}.", choice),
         ]);
       }).toList();
     }
     return Column(
       children: textList,
-    );
-  }
-}
-
-class MyStatelessWidget extends StatelessWidget {
-  const MyStatelessWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Expanded Row Sample'),
-      ),
-      body: Center(
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Container(
-                color: Colors.amber,
-                height: 100,
-              ),
-            ),
-            Container(
-              color: Colors.blue,
-              height: 100,
-              width: 50,
-            ),
-            Expanded(
-              child: Container(
-                color: Colors.amber,
-                height: 100,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

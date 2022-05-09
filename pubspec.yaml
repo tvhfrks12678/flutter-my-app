@@ -41,6 +41,9 @@ dependencies:
       path: plugins/window_size
   firebase_core: ^1.15.0
   cloud_firestore: ^3.1.13
+  video_player:
+  url_launcher: ^6.1.0
+  font_awesome_flutter: ^10.1.0
 
 dev_dependencies:
   flutter_test:
