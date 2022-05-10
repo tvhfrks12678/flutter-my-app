@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_app/models/quizzes/quiz.dart';
+import 'package:my_app/values/quizzes/twitter_id.dart';
 
 class QuizQuestion extends StatelessWidget {
   const QuizQuestion({Key? key, required this.quiz}) : super(key: key);
@@ -94,20 +95,11 @@ class QuizQuestion extends StatelessWidget {
               FontAwesomeIcons.twitter,
               size: 15,
             ),
-            Text(_getTwitterId(quiz.sourceUrl)),
+            Text(TwitterId(quiz.sourceUrl).value),
           ],
         ),
       ),
     );
-  }
-
-  String _getTwitterId(String tweetUrl) {
-    String regexString = r'/twitter.com/(\w+)/status/';
-    RegExp regExp = new RegExp(regexString);
-    var matches = regExp.allMatches(tweetUrl);
-
-    var match = matches.elementAt(0);
-    return "${match.group(1)}";
   }
 
   BoxDecoration _quizQuestionFrameBorder() {
