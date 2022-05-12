@@ -1,16 +1,15 @@
-# my_app
+# 概要
+　ロシアのウクライナ侵略に関する4択クイズアプリです。
+ 
+　現在製作途中です。
 
-A new Flutter project.
+# 制作理由
+クイズを通して、ウクライナ侵略に関する知識や興味が身につくと考えたためです。
 
-## Getting Started
+# 技術
+　Flutter、Firestore
+ 
+# 機能
+## クイズ表示機能
+<img width="386" alt="スクリーンショット 2022-05-10 20 29 43" src="https://user-images.githubusercontent.com/67419083/168108449-c6627830-99f5-4cd5-9d7f-9f4636c9bb9e.png">
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
